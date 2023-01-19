@@ -1,3 +1,4 @@
 pandas
 fsspec
 streamlit
+s3fs
