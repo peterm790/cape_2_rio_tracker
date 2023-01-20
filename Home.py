@@ -94,8 +94,9 @@ elif option == 'Routing Maps':
         st.dataframe(road_book, use_container_width=True)
         st.write(":blue[The polar filed used to calculate the expected route has been derived from the yacht's ORC handicap, some yachts do not yet have handicaps available on the ORC website and so a sistership or similar yacht has been used in place. ]")
 
+st.write('')
 
-st.write(':red[This tracker has no affiliation with Cape to Rio Race, or the official YellowBrick tracker.]')
+st.write(':red[This tracker has no affiliation with the Cape to Rio Race, or the official YellowBrick tracker.]')
 
 
 st.write('')
