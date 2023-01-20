@@ -42,9 +42,10 @@ def get_roadbook(name):
     with fs.open(file, 'r') as f:
         road_book = pd.read_csv(f)[['time', 'lat', 'lon', 'twd', 'tws', 'heading', 'twa','boat_speed', 'days_elapsed']]
     start = datetime.datetime(2023,1,2,12)
-    current = datetime.datetime.today().replace(hour=7, minute=0, second = 0, microsecond=0)
+    #if datetime.datetime.today().hour > 9:
+    current = datetime.datetime.today().replace(hour=4, minute=0, second = 0, microsecond=0)
     elapsed = current - start
-    road_book.days_elapsed = road_book.days_elapsed + elapsed.days-0.20 #start was at 1400
+    road_book.days_elapsed = road_book.days_elapsed + elapsed.days-0.40 #start was at 1400
     return road_book
 
 
