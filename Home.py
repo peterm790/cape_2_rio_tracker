@@ -76,7 +76,6 @@ if option == 'Leaderboard':
     st.dataframe(df, use_container_width=True)
     st.write(':blue[This forecasted leaderboard has been determined by weather routing each yacht individually to the finish using a polar file derived from the ORC handicap. It represents the expected finishing order if each team were to sail at 100% of their handicap from now until the finish. I have used IRC to determine the final rankings as this is what will be used to determine the overall winner.]')
     st.write(':blue[The rankings here may differ significantly from the official tracker as that determines the final rankings by extrapolating each boats VMG, usually favoring those taking the most direct course.]')
-    st.write(':blue[All times are UTC]')
 elif option == 'Routing Maps':
     team = st.selectbox(
                         'Team:',
@@ -96,6 +95,8 @@ elif option == 'Routing Maps':
         st.dataframe(road_book, use_container_width=True)
         st.write(":blue[The polar filed used to calculate the expected route has been derived from the yacht's ORC handicap, some yachts do not yet have handicaps available on the ORC website and so a sistership or similar yacht has been used in place. ]")
 
+st.write('')
+st.write(':blue[All times are UTC.]')
 st.write('')
 
 st.write(':red[This tracker has no affiliation with the Cape to Rio Race, or the official YellowBrick tracker.]')
