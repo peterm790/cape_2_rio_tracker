@@ -5,6 +5,7 @@ import json
 import streamlit.components.v1 as components
 import datetime
 
+date_hour = datetime.datetime.today().strftime('%Y-%m-%d:%H') 
 
 name_dic = {'Alexforbes ArchAngel': 'Alexforbes_ArchAngel',
             'Argonaut': 'Argonaut',
@@ -19,7 +20,7 @@ name_dic = {'Alexforbes ArchAngel': 'Alexforbes_ArchAngel',
             'Translated 9': 'Translated_9'}
             
 @st.cache()
-def get_leaderboard():
+def get_leaderboard(date_hour):
     data = []
     for name in names:
         file = f"s3://riotrackerlambdastack-cape2riotrackingbucket493cd-ax0w0veyvbks/results/{name_dic[name]}.json"
@@ -31,17 +32,17 @@ def get_leaderboard():
     for d in df['Estimated Corrected Time']:
         sortby.append(pd.Timedelta(d).asm8)
     df['sort_col'] = sortby
-    return df.sort_values('sort_col').iloc[:,:-1]
+    return df.sort_values('sort_col').iloc[:,:-1], date_hour
 
 @st.cache()
-def get_html(name):
+def get_html(name, date_hour):
     file = f"s3://riotrackerlambdastack-cape2riotrackingbucket493cd-ax0w0veyvbks/results/{name_dic[name]}.html"
     with fs.open(file, 'rb', encoding = 'utf-8') as f:
         HtmlFile = f.read()
-    return HtmlFile
+    return HtmlFile, date_hour
 
 @st.cache()
-def get_roadbook(name):
+def get_roadbook(name, date_hour):
     file = f"s3://riotrackerlambdastack-cape2riotrackingbucket493cd-ax0w0veyvbks/results/{name_dic[name]}.csv"
     with fs.open(file, 'r') as f:
         road_book = pd.read_csv(f)[['time', 'lat', 'lon', 'twd', 'tws', 'heading', 'twa','boat_speed', 'days_elapsed']]
@@ -49,7 +50,7 @@ def get_roadbook(name):
     current = datetime.datetime.strptime(road_book.time[0], '%Y-%m-%d %H:%M:%S')
     elapsed = current - start
     road_book.days_elapsed = road_book.days_elapsed + elapsed.days - round((12 - current.hour)/24,1)  #start was at 1200 UTC
-    return road_book
+    return road_book, date_hour
 
 
 st.set_page_config(layout="wide",
@@ -70,7 +71,7 @@ fs = fsspec.filesystem('s3')
 names = list(name_dic)
 
 if option == 'Leaderboard':
-    df = get_leaderboard()
+    df, _ = get_leaderboard(date_hour)
     st.dataframe(df, use_container_width=True)
     st.write(':blue[This forecasted leaderboard has been determined by weather routing each yacht individually to the finish using a polar file derived from the ORC handicap. It represents the expected finishing order if each team were to sail at 100% of their handicap from now until the finish. I have used IRC to determine the final rankings as this is what will be used to determine the overall winner.]')
     st.write(':blue[The rankings here may differ significantly from the official tracker as that determines the final rankings by extrapolating each boats VMG, usually favoring those taking the most direct course.]')
@@ -86,11 +87,11 @@ elif option == 'Routing Maps':
                     help = '')
     if map == 'Routing Chart':
         st.write('Please note these maps do not render nicely on mobile devices')
-        HtmlFile = get_html(team)
+        HtmlFile, _ = get_html(team, date_hour)
         components.html(HtmlFile, height=900, scrolling = False)
         st.write(':blue[The weather displayed here is the latest 00z GFS forecast]')
     elif map == 'Road Book':
-        road_book = get_roadbook(team)
+        road_book, _ = get_roadbook(team, date_hour)
         st.dataframe(road_book, use_container_width=True)
         st.write(":blue[The polar filed used to calculate the expected route has been derived from the yacht's ORC handicap, some yachts do not yet have handicaps available on the ORC website and so a sistership or similar yacht has been used in place. ]")
 
