@@ -60,7 +60,8 @@ st.set_page_config(layout="wide",
 
 st.title(":blue[Pete's Cape To Rio Tracker] :flag-za: -> :flag-br:")
 
-st.write(':green[The Tracker will update at 9:30 am SAST daily.]')
+st.write(':green[The Tracker will update at 10am SAST daily.]')
+st.write('The caching error that resulted in no update yesterday has been fixed :)')
 
 option = st.selectbox(
     'View:',
