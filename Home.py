@@ -5,6 +5,12 @@ import json
 import streamlit.components.v1 as components
 import datetime
 
+st.set_page_config(layout="wide",
+                page_title="Pete's Rio Tracker",
+                page_icon = ":sailboat:",
+)
+
+
 date_hour = datetime.datetime.today().strftime('%Y-%m-%d:%H') 
 
 name_dic = {'Alexforbes ArchAngel': 'Alexforbes_ArchAngel',
@@ -53,15 +59,9 @@ def get_roadbook(name, date_hour):
     return road_book, date_hour
 
 
-st.set_page_config(layout="wide",
-                page_title="Pete's Rio Tracker",
-                page_icon = ":sailboat:",
-)
-
 st.title(":blue[Pete's Cape To Rio Tracker] :flag-za: -> :flag-br:")
 
 st.write(':green[The Tracker will update at 10am SAST daily.]')
-st.write('The caching error that resulted in no update yesterday has been fixed :)')
 
 option = st.selectbox(
     'View:',
