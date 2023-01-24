@@ -24,7 +24,8 @@ name_dic = {'Alexforbes ArchAngel': 'Alexforbes_ArchAngel',
             'Ray of Light': 'Ray_of_Light',
             'Sterna': 'Sterna',
             'Translated 9': 'Translated_9'}
-            
+
+
 @st.cache()
 def get_leaderboard(date_hour):
     data = []
@@ -33,11 +34,18 @@ def get_leaderboard(date_hour):
         with fs.open(file, 'r') as f:
             data.append(pd.DataFrame(json.load(f), index = [name]))
     df = pd.concat(data).iloc[:,1:]
-    df.columns = ['ETA', 'IRC handicap', 'Estimated Time Elapsed', 'Estimated Corrected Time']
+    df.columns = ['ETA', 'IRC handicap', 'Estimated Time Elapsed', 'Estimated Corrected Time', 'Finished']
     sortby = []
     for d in df['Estimated Corrected Time']:
         sortby.append(pd.Timedelta(d).asm8)
     df['sort_col'] = sortby
+    finished = []
+    for i, name in enumerate(names):
+        if df.iloc[i]['Finished'] == 'true':
+            finished.append(True)
+        else:
+            finished.append(False)
+    df['Finished'] = finished
     return df.sort_values('sort_col').iloc[:,:-1], date_hour
 
 @st.cache()
